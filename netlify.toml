@@ -1,0 +1,29 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Netlify sets NODE_ENV=production by default, which causes npm to skip
+  # devDependencies — including Vite. This flag forces all deps to install.
+  NPM_FLAGS = "--include=dev"
+
+# SPA fallback — required so client-side routing / refresh on any path
+# doesn't 404. Point Market handles all "routing" in-memory via React state,
+# so every path must serve index.html and let React take over.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
