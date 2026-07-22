@@ -1,0 +1,35 @@
+/* =============================================================================
+   src/index.css  ·  Point Market — Global Reset
+   Component-level styles are injected by App.jsx itself (CSS-in-JS via
+   <style> tags scoped under .kt-root / .auth-root / .admin-root).
+   This file only handles the document-level reset so nothing leaks in
+   from browser defaults before the app mounts.
+   ============================================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+button, input, textarea {
+  font-family: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
