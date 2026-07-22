@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Point Market — Trade with Points. A social marketplace for trading items, skills, and services." />
+  <meta name="theme-color" content="#0d1b2e" />
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <title>PointMarket — Trade with Points</title>
+</head>
+<body>
+  <!--
+    Required by Firebase Phone Auth (RecaptchaVerifier in App.jsx targets
+    this exact id: "pm-recaptcha-container"). Must exist before sendOtp()
+    is called, and must NOT be removed or renamed.
+  -->
+  <div id="pm-recaptcha-container"></div>
+
+  <!-- React app mounts here -->
+  <div id="root"></div>
+
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
