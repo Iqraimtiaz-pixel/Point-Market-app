@@ -1,0 +1,269 @@
+// =============================================================================
+//  firestore.rules  ·  Point Market — Complete Firestore Security Rules
+//
+//  HOW TO DEPLOY:
+//  1. Firebase Console → Firestore Database → Rules tab
+//  2. Delete everything in the editor
+//  3. Paste ALL of the content below
+//  4. Click "Publish"
+//
+//  Or via CLI:  firebase deploy --only firestore:rules
+// =============================================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+
+    function isAuthed() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuthed() && request.auth.uid == uid;
+    }
+
+    // Set isAdmin: true manually on your own user doc in the Firebase Console
+    // to become the first admin. Admins can then promote others via the
+    // admin dashboard (server-side / Cloud Function recommended for that).
+    function isAdmin() {
+      return isAuthed() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    function onlyUpdates(allowedFields) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowedFields);
+    }
+
+    // ── USERS ──────────────────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read: if isAuthed();
+
+      // Only the user themselves can create their own document.
+      // pmPoints must start at exactly 100 (server-enforced welcome bonus)
+      // and isAdmin must be false (cannot self-promote).
+      allow create: if isOwner(uid)
+        && request.resource.data.uid == uid
+        && request.resource.data.pmPoints == 100
+        && request.resource.data.isAdmin == false;
+
+      allow update: if (isOwner(uid)
+        && onlyUpdates([
+          "fullName", "username", "bio", "avatarEmoji", "email",
+          "city", "lat", "lng", "lastActiveAt", "followers",
+          "following", "likedListings", "updatedAt", "pointsStatus",
+          "productListingCount", "skillListingCount"
+        ])
+        && request.resource.data.isAdmin == resource.data.isAdmin
+        && !("isSuspended" in request.resource.data.diff(resource.data).affectedKeys())
+      ) || isAdmin();
+
+      allow delete: if isAdmin();
+
+      // /users/{uid}/posts/{postId} — mirror written by the Create Post flow
+      // for fast "My Posts" / PM Space lookups without a collection-group query.
+      match /posts/{postId} {
+        allow read:   if isAuthed();
+        allow create: if isOwner(uid);
+        allow update: if isOwner(uid) || isAdmin();
+        allow delete: if isOwner(uid) || isAdmin();
+      }
+
+      // /users/{uid}/saved_listings/{savedId} — bookmarks, owner-only
+      match /saved_listings/{savedId} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    // ── POSTS  (top-level collection written by CreateScreen → Home feed) ───
+    match /posts/{postId} {
+      allow read: if isAuthed();
+
+      allow create: if isAuthed()
+        && request.resource.data.userId == request.auth.uid;
+
+      allow update: if isAuthed() && (
+        (resource.data.userId == request.auth.uid
+          && !request.resource.data.diff(resource.data).affectedKeys()
+              .hasAny(["userId", "isRemoved", "isBoosted", "boostExpiresAt"]))
+        || (resource.data.userId == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(["likes", "views", "comments", "updatedAt"]))
+        || isAdmin()
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // ── PRODUCT LISTINGS  (marketplace.js — extended catalogue system) ──────
+    match /product_listings/{listingId} {
+      allow read: if isAuthed();
+
+      allow create: if isAuthed()
+        && request.resource.data.uid       == request.auth.uid
+        && request.resource.data.isRemoved == false
+        && request.resource.data.title.size() >= 3
+        && request.resource.data.title.size() <= 100
+        && request.resource.data.status in ["active", "draft"];
+
+      allow update: if isAuthed() && (
+        (resource.data.uid == request.auth.uid
+          && !request.resource.data.diff(resource.data).affectedKeys()
+              .hasAny(["uid", "isRemoved", "removedBy", "isBoosted", "boostExpiresAt"]))
+        || (resource.data.uid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(["likes", "views", "saves", "updatedAt"]))
+        || isAdmin()
+      );
+
+      allow delete: if false; // always soft-delete via update
+
+      match /listing_reviews/{reviewId} {
+        allow read:   if isAuthed();
+        allow create: if isAuthed()
+          && request.resource.data.reviewerUid == request.auth.uid
+          && request.resource.data.rating >= 1
+          && request.resource.data.rating <= 5;
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // ── SKILL LISTINGS  (marketplace.js — extended catalogue system) ────────
+    match /skill_listings/{listingId} {
+      allow read: if isAuthed();
+
+      allow create: if isAuthed()
+        && request.resource.data.uid       == request.auth.uid
+        && request.resource.data.isRemoved == false
+        && request.resource.data.title.size() >= 3
+        && request.resource.data.status in ["active", "draft"];
+
+      allow update: if isAuthed() && (
+        (resource.data.uid == request.auth.uid
+          && !request.resource.data.diff(resource.data).affectedKeys()
+              .hasAny(["uid", "isRemoved", "removedBy", "isBoosted", "boostExpiresAt"]))
+        || isAdmin()
+      );
+
+      allow delete: if false;
+
+      match /listing_reviews/{reviewId} {
+        allow read:   if isAuthed();
+        allow create: if isAuthed()
+          && request.resource.data.reviewerUid == request.auth.uid
+          && request.resource.data.rating >= 1
+          && request.resource.data.rating <= 5;
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // ── CATEGORIES (admin-managed reference data) ────────────────────────────
+    match /categories/{docId} {
+      allow read:  if isAuthed();
+      allow write: if isAdmin();
+    }
+
+    // ── TRADES ─────────────────────────────────────────────────────────────
+    match /trades/{tradeId} {
+      allow read: if (isAuthed()
+        && (resource.data.fromUid == request.auth.uid
+         || resource.data.toUid   == request.auth.uid)
+      ) || isAdmin();
+
+      allow create: if isAuthed()
+        && request.resource.data.fromUid == request.auth.uid
+        && request.resource.data.status  == "pending";
+
+      allow update: if (isAuthed() && (
+        (resource.data.toUid   == request.auth.uid
+          && onlyUpdates(["status", "updatedAt"]))
+        || (resource.data.fromUid == request.auth.uid
+          && request.resource.data.status == "cancelled")
+      )) || isAdmin();
+    }
+
+    // ── POINTS LEDGER  (single authoritative rule set — pointsEngine.js) ────
+    match /points_ledger/{ledgerId} {
+      allow read: if (isAuthed() && resource.data.uid == request.auth.uid) || isAdmin();
+
+      // Client may only create PENDING purchase submissions.
+      // Rewards, credits, debits, transfers are written by trusted service
+      // logic running as the authenticated user but validated by pointsEngine.js
+      // business rules (daily caps, velocity checks, duplicate detection)
+      // before the write ever happens.
+      allow create: if isAuthed()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.amount > 0;
+
+      allow update, delete: if isAdmin();
+    }
+
+    // ── POINTS REWARD RULES (admin-configurable) ─────────────────────────────
+    match /points_rewards/{docId} {
+      allow read:  if isAuthed();
+      allow write: if isAdmin();
+    }
+
+    // ── POINTS TRANSFERS (peer-to-peer) ──────────────────────────────────────
+    match /points_transfers/{transferId} {
+      allow read: if (isAuthed()
+        && (resource.data.fromUid == request.auth.uid
+         || resource.data.toUid   == request.auth.uid)
+      ) || isAdmin();
+
+      allow create: if isAuthed()
+        && request.resource.data.fromUid == request.auth.uid
+        && request.resource.data.amount  >  0
+        && request.resource.data.amount  <= 5000
+        && request.resource.data.status  == "completed";
+
+      allow update, delete: if isAdmin();
+    }
+
+    // ── POINTS FRAUD LOG ──────────────────────────────────────────────────────
+    match /points_fraud_log/{docId} {
+      allow read:   if isAdmin();
+      allow create: if isAuthed();
+      allow update, delete: if false;
+    }
+
+    // ── REVIEWS (general user-to-user reviews) ───────────────────────────────
+    match /reviews/{reviewId} {
+      allow read:   if isAuthed();
+      allow create: if isAuthed() && request.resource.data.reviewerUid == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // ── REPORTS (bug / scam / fake listing / suggestion / feedback) ─────────
+    match /reports/{reportId} {
+      allow read: if (isAuthed() && resource.data.reporterUid == request.auth.uid) || isAdmin();
+      allow create: if isAuthed()
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.status == "open";
+      allow update: if isAdmin();
+    }
+
+    // ── LISTING-SPECIFIC REPORTS (from marketplace.js) ───────────────────────
+    match /listing_reports/{reportId} {
+      allow read: if (isAuthed() && resource.data.reporterUid == request.auth.uid) || isAdmin();
+      allow create: if isAuthed()
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.status == "open";
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    // ── DEVICE FINGERPRINTS (Sybil / multi-account fraud prevention) ────────
+    match /device_fingerprints/{fpHash} {
+      allow read:   if isAuthed();
+      allow create: if isAuthed();
+      allow update, delete: if false;
+    }
+
+    // ── CATCH-ALL: deny everything not explicitly listed above ──────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
