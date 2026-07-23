@@ -458,8 +458,7 @@ function AuthFlow({ onComplete, onAdminMode }) {
     setAuthError("");
     const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
-      await completeGoogleUser(result.user);
+      await signInWithRedirect(auth, provider);return;
     } catch (e) {
       // Ignore deliberate cancellations (user closed the popup)
       if (e.code === "auth/popup-closed-by-user" || e.code === "auth/cancelled-popup-request") {
