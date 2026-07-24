@@ -4256,7 +4256,7 @@ function BoostUpload({ onUploaded }) {
         style={!title.trim() || !mediaFile || uploading ? { opacity: 0.4 } : {}}
         onClick={handleContinue}
       >
-        {uploading ? "Uploading to Cloudinary…" : <>Continue <ChevronRight size={16} /></>}
+        {uploading ? "Uploading your video…" : <>Continue <ChevronRight size={16} /></>}
       </button>
     </>
   );
