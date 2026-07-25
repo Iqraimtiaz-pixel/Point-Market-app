@@ -15,7 +15,7 @@ import {
   Image as ImageIcon,
   MapPin, Navigation, Crosshair, Map as MapIcon, Compass,
   ScanEye, ShieldAlert, ShieldCheck, BadgeCheck,
-  UserPlus, UserCheck, Info, Video,
+  UserPlus, UserCheck, Info, Video,Film,
   Phone as PhoneIcon, Tag,
   Copy, Clock, Receipt, ShieldX,
   BarChart3, LineChart, Activity, Flag, Bug, Lightbulb,
