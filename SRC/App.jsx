@@ -1,4 +1,4 @@
-   firebase/firestore). No window globals, no runtime loader script.
+   firebase/firestore). No window globals, no runtime loader script. 
    ─────────────────────────────────────────
    Real OTP flow: Firebase Phone Auth + RecaptchaVerifier.
 ───────────────────────────────────────── */
