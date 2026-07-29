@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 
 // ── Firebase (real ES module imports — no window globals) ──
-// import { auth, db } from "./firebase";
+import { auth, db } from "./firebase";
 import {
   onAuthStateChanged,
   signInWithPhoneNumber,
