@@ -4292,7 +4292,7 @@ function BoostUpload({ onUploaded }) {
         style={!title.trim() || !mediaFile || uploading ? { opacity: 0.4 } : {}}
         onClick={handleContinue}
       >
-        {uploading ? "Uploading to Cloudinary…" : <>Continue <ChevronRight size={16} /></>}
+        {uploading ? "Uploading …" : <>Continue <ChevronRight size={16} /></>}
       </button>
     </>
   );
@@ -4583,7 +4583,7 @@ function CreateScreen({ currentUser, userLocation }) {
      RENDER — stage machine
   ───────────────────────────────────────── */
 
-  /* ── Uploading to Cloudinary ── */
+  /* ── Uploading Media ── */
   if (stage === "uploading") {
     return (
       <div className="kt-scroll">
@@ -4599,7 +4599,7 @@ function CreateScreen({ currentUser, userLocation }) {
             onCancel={() => abortRef.current?.abort()}
           />
           <div className="cld-upload-note">
-            Your file is being securely uploaded to Cloudinary CDN.
+            Your file is being securely uploaded.
             Thumbnail will be generated automatically.
           </div>
         </div>
@@ -4653,7 +4653,7 @@ function CreateScreen({ currentUser, userLocation }) {
             <CheckCircle2 size={42} color="#22c55e" />
           </div>
           <div className="cld-upload-title" style={{ color: "#22c55e" }}>Listing is live!</div>
-          <div className="cld-upload-sub">Your post has been uploaded to Cloudinary and saved to Firestore.</div>
+          <div className="cld-upload-sub">Your post has been uploaded successfully.</div>
 
           {/* Show the real Cloudinary thumbnail */}
           {cldResult?.public_id && (
@@ -4669,7 +4669,7 @@ function CreateScreen({ currentUser, userLocation }) {
           <div className="cld-media-info">
             {cldResult && (
               <>
-                <div className="cld-info-row"><span>CDN URL</span><a href={cldResult.secure_url} target="_blank" rel="noopener noreferrer" style={{ color: "#22c55e", fontSize: 11, wordBreak: "break-all" }}>View on Cloudinary ↗</a></div>
+                <div className="cld-info-row"><span>CDN URL</span><a href={cldResult.secure_url} target="_blank" rel="noopener noreferrer" style={{ color: "#22c55e", fontSize: 11, wordBreak: "break-all" }}>View Media ↗</a></div>
                 {cldResult.duration && <div className="cld-info-row"><span>Duration</span><b>{Math.round(cldResult.duration)}s</b></div>}
                 <div className="cld-info-row"><span>Size</span><b>{(cldResult.bytes / 1024 / 1024).toFixed(1)} MB</b></div>
                 <div className="cld-info-row"><span>Format</span><b>{cldResult.format?.toUpperCase()}</b></div>
@@ -4719,7 +4719,7 @@ function CreateScreen({ currentUser, userLocation }) {
           <ImageIcon size={28} style={{ color: "#22c55e" }} />
           <div style={{ fontWeight: 700, marginTop: 8, color: "var(--ink)" }}>Choose from gallery</div>
           <div style={{ fontSize: 12, marginTop: 4, color: "#6f8b80" }}>Select a video or photo of your item, skill, or service</div>
-          <div style={{ fontSize: 11, marginTop: 8, color: "#22c55e", fontWeight: 600 }}>Powered by Cloudinary CDN</div>
+        
         </div>
       ) : (
         <div className="upload-box" style={{ padding: 12 }}>
@@ -4776,7 +4776,7 @@ function CreateScreen({ currentUser, userLocation }) {
       {/* ── Info notices ── */}
       <div className="ai-est-box" style={{ flexDirection: "column", alignItems: "flex-start", gap: 6 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}><ScanEye size={15} /> AI Authenticity &amp; Karma Scoring Engine will run after upload</div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}><ImageIcon size={14} /> Media will be uploaded to <b>Cloudinary CDN</b> and the URL saved in Firestore</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}><ImageIcon size={14} /> Media will be uploaded securely</div>
       </div>
 
       {/* ── Submit button ── */}
