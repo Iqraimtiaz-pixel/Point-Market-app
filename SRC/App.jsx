@@ -6184,10 +6184,10 @@ function EditProfileSheet({ onClose, currentUser, onProfileUpdate }) {
       setDone(true);
       setTimeout(onClose, 1200);
     } catch (e) {
-      console.warn("Failed to save profile:", e);
-      setSaving(false);
-      setSaveErr("Could not save your changes. Please check your connection and try again.");
-    }
+  console.error("PROFILE SAVE ERROR FULL:", e);
+  setSaving(false);
+  setSaveErr(e.message);
+}
   };
 
   const fallbackAvatar = currentUser?.avatarEmoji || "🧑";
