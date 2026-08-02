@@ -1,0 +1,78 @@
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  .admin-root {
+    min-height: 100vh; width: 100%;
+    background: #f4f6f9;
+    font-family: 'Inter', sans-serif;
+    color: #0f172a;
+    box-sizing: border-box;
+  }
+  .admin-root *, .admin-root *::before, .admin-root *::after { box-sizing: border-box; }
+
+  .admin-shell { display: flex; min-height: 100vh; max-width: 1400px; margin: 0 auto; }
+
+  /* ── Sidebar ── */
+  .admin-sidebar { width: 230px; flex-shrink: 0; background: #0f172a; color: #e2e8f0; display: flex; flex-direction: column; padding: 20px 14px; position: sticky; top: 0; height: 100vh; }
+  .admin-brand { display: flex; align-items: center; gap: 10px; padding: 6px 8px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 14px; }
+  .admin-brand-mark { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, #2563eb, #D6001C); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+  .admin-brand-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 14px; color: #fff; }
+  .admin-brand-sub { font-size: 10.5px; color: #94a3b8; letter-spacing: 0.04em; }
+  .admin-nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .admin-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; color: #94a3b8; cursor: pointer; transition: background .15s, color .15s; }
+  .admin-nav-item:hover { background: rgba(255,255,255,0.04); color: #e2e8f0; }
+  .admin-nav-item.active { background: rgba(37,99,235,0.18); color: #60a5fa; }
+  .admin-exit-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(220,38,38,0.12); color: #f87171; border: 1px solid rgba(220,38,38,0.25); border-radius: 10px; padding: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+
+  /* ── Main panel ── */
+  .admin-main { flex: 1; padding: 28px 32px 60px; overflow-y: auto; }
+  .admin-section { max-width: 980px; }
+  .admin-section-head { margin-bottom: 22px; }
+  .admin-section-head h2 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px; margin: 0 0 4px; }
+  .admin-section-head p { font-size: 13px; color: #64748b; margin: 0; }
+
+  /* ── Stat cards ── */
+  .admin-stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .admin-stat-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; }
+  .admin-stat-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+  .admin-stat-value { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 24px; }
+  .admin-stat-label { font-size: 12px; color: #64748b; margin-top: 2px; font-weight: 600; }
+  .admin-stat-sub { font-size: 10.5px; color: #94a3b8; margin-top: 4px; }
+
+  /* ── Chart / list cards ── */
+  .admin-chart-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; margin-bottom: 16px; }
+  .admin-chart-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; font-size: 13px; font-weight: 700; color: #0f172a; }
+  .admin-chart-head b { color: #2563eb; font-size: 12.5px; }
+  .admin-disconnected { display: flex; align-items: center; gap: 9px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 14px; font-size: 12.5px; color: #94a3b8; font-weight: 600; }
+  .admin-empty { text-align: center; color: #94a3b8; font-size: 13px; padding: 30px 10px; }
+
+  /* ── Lists ── */
+  .admin-list { display: flex; flex-direction: column; gap: 8px; }
+  .admin-list-row { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; background: #f8fafc; font-size: 12.5px; }
+  .admin-list-rank { width: 20px; height: 20px; border-radius: 999px; background: #e2e8f0; color: #475569; display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 700; flex-shrink: 0; }
+  .admin-list-left { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .admin-list-right { color: #64748b; font-weight: 600; flex-shrink: 0; }
+
+  .admin-review-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px; border-radius: 12px; background: #f8fafc; margin-bottom: 8px; }
+  .admin-report-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fee2e2; margin-bottom: 10px; }
+  .admin-report-tag { font-size: 10px; font-weight: 700; background: #dc2626; color: #fff; border-radius: 999px; padding: 4px 9px; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; white-space: nowrap; }
+  .admin-mod-row { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: #f8fafc; margin-bottom: 8px; }
+
+  .admin-mini-btn { display: flex; align-items: center; gap: 5px; border: none; border-radius: 8px; padding: 7px 11px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .admin-mini-btn.resolve { background: #dcfce7; color: #16a34a; }
+  .admin-mini-btn.dismiss { background: #fee2e2; color: #dc2626; }
+
+  .admin-status-pill { font-size: 10px; font-weight: 700; border-radius: 999px; padding: 4px 10px; text-transform: capitalize; flex-shrink: 0; }
+  .admin-status-pill.resolved { background: #dcfce7; color: #16a34a; }
+  .admin-status-pill.dismissed { background: #f1f5f9; color: #64748b; }
+
+  .avatar-sm { width: 28px; height: 28px; border-radius: 999px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+
+  @media (max-width: 720px) {
+    .admin-shell { flex-direction: column; }
+    .admin-sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; align-items: center; padding: 12px; }
+    .admin-brand { border-bottom: none; margin-bottom: 0; padding: 0 10px 0 0; flex-shrink: 0; }
+    .admin-nav { flex-direction: row; flex-wrap: wrap; flex: 1; }
+    .admin-nav-item { padding: 8px 10px; font-size: 12px; }
+    .admin-exit-btn { margin-top: 0; width: auto; }
+    .admin-main { padding: 20px 16px 40px; }
+  }
