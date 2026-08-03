@@ -1,4 +1,4 @@
-// ── Extracted from App.jsx: ChatScreen ──
+     // â”€â”€ Extracted from App.jsx: ChatScreen â”€â”€
 import React, { useState, useEffect } from "react";
 import {
   ChevronLeft,
@@ -19,16 +19,16 @@ import { db } from "../firebase";
 export function ChatScreen({ chat, onBack, currentUser }) {
   const [input,    setInput]    = useState("");
   const [messages, setMessages] = useState([]);
-  // ── TEMP DEBUG STATE (on-screen debug layer — safe to delete later) ──
+  // â”€â”€ TEMP DEBUG STATE (on-screen debug layer â€” safe to delete later) â”€â”€
   const [debugInfo,  setDebugInfo]  = useState(null);
   const [debugStage, setDebugStage] = useState("");
   const [debugError, setDebugError] = useState(null);
   const myUid = currentUser?.uid;
   const otherUid = chat?.otherUid;
-  // Deterministic conversation id — same regardless of who opened the chat first.
+  // Deterministic conversation id â€” same regardless of who opened the chat first.
   const chatId = (myUid && otherUid) ? [myUid, otherUid].sort().join("_") : null;
 
-  // ── Live message history for this conversation ──
+  // â”€â”€ Live message history for this conversation â”€â”€
   useEffect(() => {
     if (!chatId) { setMessages([]); return; }
     const q = fsQuery(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"));
@@ -39,7 +39,7 @@ export function ChatScreen({ chat, onBack, currentUser }) {
           return {
             from: m.from === myUid ? "me" : "them",
             text: m.text,
-            time: m.createdAt?.toDate ? m.createdAt.toDate().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "…",
+            time: m.createdAt?.toDate ? m.createdAt.toDate().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "â€¦",
           };
         }));
       },
@@ -51,7 +51,7 @@ export function ChatScreen({ chat, onBack, currentUser }) {
   const send = async () => {
     const text = input.trim();
     console.log("send() debug:", { text, myUid, otherUid, chatId });
-    // ── TEMP DEBUG: snapshot everything relevant, even if we're about to early-return ──
+    // â”€â”€ TEMP DEBUG: snapshot everything relevant, even if we're about to early-return â”€â”€
     setDebugInfo({ currentUser, myUid, otherUid, chatId, text });
     setDebugError(null);
     if (!text || !chatId || !myUid) { setDebugStage("EARLY RETURN (missing text/chatId/myUid)"); return; }
@@ -63,8 +63,8 @@ export function ChatScreen({ chat, onBack, currentUser }) {
       await setDoc(doc(db, "chats", chatId), {
         participants: [myUid, otherUid],
         participantInfo: {
-          [myUid]:    { user: currentUser.username || currentUser.fullName || "Trader", avatar: currentUser.avatarEmoji || "🧑", avatarUrl: currentUser.avatarUrl || null },
-          [otherUid]: { user: chat.user || "Trader", avatar: chat.avatar || "🧑", avatarUrl: chat.avatarUrl || null },
+          [myUid]:    { user: currentUser.username || currentUser.fullName || "Trader", avatar: currentUser.avatarEmoji || "ðŸ§‘", avatarUrl: currentUser.avatarUrl || null },
+          [otherUid]: { user: chat.user || "Trader", avatar: chat.avatar || "ðŸ§‘", avatarUrl: chat.avatarUrl || null },
         },
         lastMessage: text,
         updatedAt: serverTimestamp(),
@@ -72,14 +72,18 @@ export function ChatScreen({ chat, onBack, currentUser }) {
       console.log("After setDoc");
       setDebugStage("After setDoc");
       // Then append the actual message
-      await addDoc(collection(db, "chats", chatId, "messages"), {
-        from: myUid,
-        text,
-        createdAt: serverTimestamp(),
-      });
+      console.log("DEBUG STAGE: Before addDoc");
+
+await addDoc(collection(db, "chats", chatId, "messages"), {
+  from: myUid,
+  text,
+  createdAt: serverTimestamp(),
+});
+
+console.log("DEBUG STAGE: After addDoc");
     } catch (err) {
       console.error("SEND ERROR:", err);
-      // ── TEMP DEBUG: surface the complete Firebase error on-screen ──
+      // â”€â”€ TEMP DEBUG: surface the complete Firebase error on-screen â”€â”€
       setDebugStage("ERROR");
       setDebugError({
         code: err?.code ?? "(no code)",
@@ -93,7 +97,7 @@ export function ChatScreen({ chat, onBack, currentUser }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      {/* ── TEMP DEBUG BANNER — confirms this file is the one actually deployed ── */}
+      {/* â”€â”€ TEMP DEBUG BANNER â€” confirms this file is the one actually deployed â”€â”€ */}
       <div style={{ background: "#ff0000", color: "#fff", fontWeight: 900, textAlign: "center", padding: "6px 4px", fontSize: 13, letterSpacing: 1, fontFamily: "monospace" }}>
         DEBUG VERSION ACTIVE
       </div>
@@ -102,7 +106,7 @@ export function ChatScreen({ chat, onBack, currentUser }) {
         <div className="avatar-sm" style={{ width: 34, height: 34, fontSize: 16, flexShrink: 0 }}>{chat.avatarUrl ? <img src={chat.avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "999px" }} /> : chat.avatar}</div>
         <h2>{chat.user}</h2>
       </div>
-      {/* ── TEMP DEBUG PANEL — shows on-screen what previously only went to console ── */}
+      {/* â”€â”€ TEMP DEBUG PANEL â€” shows on-screen what previously only went to console â”€â”€ */}
       {(debugInfo || debugStage || debugError) && (
         <div style={{ background: "#111", color: "#0f0", fontFamily: "monospace", fontSize: 11, padding: 10, maxHeight: 260, overflowY: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word", borderBottom: "3px solid #ff0000" }}>
           <div style={{ color: "#0ff", fontWeight: 700, marginBottom: 4 }}>DEBUG STAGE: {debugStage || "(idle)"}</div>
@@ -144,10 +148,11 @@ export function ChatScreen({ chat, onBack, currentUser }) {
         )}
       </div>
       <div className="chat-input-row">
-        <input className="chat-input" placeholder="Message…" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} />
+        <input className="chat-input" placeholder="Messageâ€¦" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} />
         <button className="send-btn" onClick={send}><Send size={16} /></button>
       </div>
     </div>
   );
 }
 
+     
