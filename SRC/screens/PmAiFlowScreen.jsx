@@ -213,7 +213,7 @@ export function PmAiFlowScreen({ category = "", onComplete, onBack }) {
 
           <div style={styles.textGroup}>
             <h1 style={styles.welcomeTitle}>
-              Hello! <span role="img" aria-label="wave">ðŸ‘‹</span><br />
+              Hello! <span role="img" aria-label="wave">👋</span><br />
               I'm <span style={{ color: "#FF3B6B" }}>PM AI</span>
             </h1>
             <p style={styles.welcomeDesc}>
