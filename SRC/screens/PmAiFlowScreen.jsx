@@ -19,7 +19,7 @@ import {
   Check,
 } from "lucide-react";
 import { generateCategoryQuestions, QUESTION_TYPES } from "../utils/aiQuestionEngine";
-import { CommunityVerificationScreen } from "../components/CommunityVerificationScreen";
+import { CommunityVerificationScreen } from "./CommunityVerificationScreen";
 export function PmAiFlowScreen({ category = "", onComplete, onBack }) {
   // Screen stages: "welcome" | "conversation" | "valuation_preview" | "community_verification" | "final_summary"
   const [screenStage, setScreenStage] = useState("welcome");
