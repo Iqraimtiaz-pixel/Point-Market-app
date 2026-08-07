@@ -450,98 +450,14 @@ export function PmAiFlowScreen({ category = "", onComplete, onBack }) {
           STAGE 4: Community Verification Screen
       â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {screenStage === "community_verification" && (
-        <div style={styles.contentScroll}>
-          <div style={styles.progressNav}>
-            {[1, 2, 3, 4, 5].map((step) => {
-              const isDone = step < currentStep;
-              const isActive = step === currentStep;
-              return (
-                <React.Fragment key={step}>
-                  <div
-                    style={
-                      isDone
-                        ? styles.progressStepDone
-                        : isActive
-                        ? styles.progressStepActive
-                        : styles.progressStep
-                    }
-                  >
-                    {isDone ? <Check size={12} color="#FFFFFF" /> : step}
-                  </div>
-                  {step < 5 && (
-                    <div style={isDone ? styles.progressLineDone : styles.progressLine} />
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
-          <div style={styles.progressLabels}>
-            <span style={{ color: "#64748B" }}>Upload</span>
-            <span style={{ color: "#64748B" }}>AI Questions</span>
-            <span style={{ color: "#64748B" }}>AI Value</span>
-            <span style={{ fontWeight: 700, color: "#1E3A8A" }}>Verify</span>
-            <span style={{ color: "#64748B" }}>Publish</span>
-          </div>
-
-          <div style={styles.premiumCard}>
-            <div style={styles.cardHeaderRow}>
-              <div style={styles.cardHeaderIcon}><Users size={20} color="#FF3B6B" /></div>
-              <div style={{ fontSize: 17, fontWeight: 800, color: "#1E3A8A" }}>Community Verification</div>
-            </div>
-            <p style={styles.premiumCardDesc}>
-              Our AI has estimated your item's value. Now trusted community members will verify your listing to improve accuracy and trust.
-            </p>
-          </div>
-
-          <div style={styles.sectionCard}>
-            <div style={styles.sectionTitle}>Verification Status</div>
-            <div style={styles.trackerList}>
-              <div style={styles.trackerItem}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <CheckCircle2 size={18} color="#16A34A" />
-                  <span style={{ fontWeight: 600, fontSize: 13.5, color: "#1E293B" }}>AI Verification</span>
-                </div>
-                <span style={styles.statusBadgeCompleted}>Completed</span>
-              </div>
-
-              <div style={styles.trackerItem}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <Clock size={18} color="#D97706" />
-                  <span style={{ fontWeight: 600, fontSize: 13.5, color: "#1E293B" }}>Community Verification</span>
-                </div>
-                <span style={styles.statusBadgePending}>Pending</span>
-              </div>
-
-              <div style={styles.trackerItem}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <Award size={18} color="#1E3A8A" />
-                  <span style={{ fontWeight: 600, fontSize: 13.5, color: "#1E293B" }}>Trust Score</span>
-                </div>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#1E3A8A" }}>Starting from 70%</span>
-              </div>
-            </div>
-          </div>
-
-          <div style={styles.sectionCard}>
-            <div style={styles.sectionTitle}>Benefits of Community Verification</div>
-            <div style={styles.benefitsGrid}>
-              <div style={styles.benefitRow}><Eye size={15} color="#16A34A" /><span>Better visibility</span></div>
-              <div style={styles.benefitRow}><Award size={15} color="#16A34A" /><span>Higher Trust Score</span></div>
-              <div style={styles.benefitRow}><Sparkles size={15} color="#16A34A" /><span>More accurate Karma Points</span></div>
-              <div style={styles.benefitRow}><Zap size={15} color="#16A34A" /><span>Faster successful trades</span></div>
-            </div>
-          </div>
-
-          <div style={{ marginTop: "auto", paddingTop: 16, display: "flex", gap: 10 }}>
-            <button style={styles.secondaryBtn} onClick={() => setScreenStage("valuation_preview")}>Back</button>
-            <button style={{ ...styles.primaryBtn, flex: 2 }} onClick={() => setScreenStage("final_summary")}>
-              <span>Continue</span>
-              <ArrowRight size={16} />
-            </button>
-          </div>
-        </div>
-      )}
-
+  <CommunityVerificationScreen
+    category={category}
+    onContinue={() => setScreenStage("final_summary")}
+    onSkip={() => setScreenStage("final_summary")}
+    onBack={() => setScreenStage("valuation_preview")}
+  />
+)}
+{
       {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           STAGE 5: Final AI Summary Screen
       â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
