@@ -1,0 +1,299 @@
+/* ==========================================================================
+   PRODUCTS MARKETPLACE REDESIGN STYLES
+   ========================================================================== */
+
+.pm-screen-container {
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Header & Sticky Nav */
+.pm-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 12px 16px 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pm-header-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pm-back-btn {
+  background: none;
+  border: none;
+  font-size: 26px;
+  line-height: 1;
+  color: #1f2937;
+  cursor: pointer;
+  padding: 0 8px 0 0;
+  display: flex;
+  align-items: center;
+}
+
+.pm-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* Search Bar */
+.pm-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.pm-search-icon {
+  position: absolute;
+  left: 12px;
+  width: 18px;
+  height: 18px;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.pm-search-input {
+  width: 100%;
+  padding: 10px 36px 10px 38px;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #1f2937;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.pm-search-input:focus {
+  background-color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.pm-search-clear {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px;
+}
+
+/* Scrollable Horizontal Categories */
+.pm-categories-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.pm-categories-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.pm-category-pill {
+  flex: 0 0 auto;
+  padding: 6px 14px;
+  border-radius: 16px;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  font-size: 0.825rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pm-category-pill.active {
+  background-color: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Distance Chips Bar */
+.pm-distance-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.pm-distance-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.pm-distance-chip {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #6b7280;
+  font-size: 0.775rem;
+  font-weight: 500;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pm-distance-chip.active {
+  background-color: #eff6ff;
+  color: #2563eb;
+  border-color: #bfdbfe;
+  font-weight: 600;
+}
+
+/* Main Grid & Cards */
+.pm-content {
+  flex: 1;
+  padding: 12px 12px 24px 12px;
+}
+
+.pm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.pm-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pm-card:active {
+  transform: scale(0.98);
+}
+
+.pm-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #f3f4f6;
+  overflow: hidden;
+}
+
+.pm-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pm-card-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.pm-card-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.2em;
+}
+
+.pm-card-kp {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 0.875rem;
+  margin-top: 2px;
+}
+
+.pm-kp-icon {
+  font-size: 0.8rem;
+}
+
+.pm-card-seller {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.725rem;
+  color: #6b7280;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.pm-seller-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+.pm-seller-dot {
+  font-size: 0.6rem;
+  color: #9ca3af;
+}
+
+.pm-seller-distance {
+  white-space: nowrap;
+}
+
+/* Empty State */
+.pm-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.pm-empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.pm-empty-state h3 {
+  font-size: 1.1rem;
+  color: #1f2937;
+  margin: 0 0 6px 0;
+}
+
+.pm-empty-state p {
+  font-size: 0.875rem;
+  margin: 0;
+}
