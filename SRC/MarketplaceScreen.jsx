@@ -2,23 +2,36 @@ import React, { useState, useMemo } from 'react';
 import { getCategoryDisplayName } from '../utils/category-helpers';
 
 /**
- * Modern Mobile-First Products Marketplace Screen
+ * Redesigned Products Marketplace Screen
  * 
- * Props accepted:
- * - products / items: Array of product objects from Firestore
- * - onSelectProduct: Callback function when a product is clicked (passes full product object to DetailScreen)
- * - onBack: Callback for navigating back
- * - categories: Array of category strings (optional)
- * - selectedDistance: Current distance filter
- * - onDistanceChange: Callback to update distance filter
+ * Accepts:
+ * - products / items: Array of Firestore product objects
+ * - onSelectProduct: Callback function to open DetailScreen
+ * - onNavigate: Alternative navigation handler
+ * - onBack: Callback to navigate back
+ * - categories: Array of category strings or objects (optional override)
+ * - selectedDistance: Initial active distance filter
+ * - onDistanceChange: Callback when distance filter changes
  */
 export default function MarketplaceScreen({
   products = [],
-  items = [], // fallback if parent uses 'items'
+  items = [],
   onSelectProduct,
   onNavigate,
   onBack,
-  categories = ['All', 'Electronics', 'Fashion', 'Books', 'Home', 'Services', 'Vehicles', 'Other'],
+  categories = [
+    'All',
+    'Electronics',
+    'Furniture',
+    'Fashion & Clothing',
+    'Beauty & Personal Care',
+    'Home & Kitchen',
+    'Books & Media',
+    'Mobile Phones',
+    'Vehicles',
+    'Services',
+    'Other'
+  ],
   selectedDistance = 'all',
   onDistanceChange
 }) {
@@ -26,10 +39,12 @@ export default function MarketplaceScreen({
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeDistance, setActiveDistance] = useState(selectedDistance || 'all');
 
-  // Consolidate product source
-  const rawProductsList = products.length > 0 ? products : items;
+  // Unified product data source from props
+  const rawProducts = useMemo(() => {
+    return Array.isArray(products) && products.length > 0 ? products : items;
+  }, [products, items]);
 
-  // Handle distance change
+  // Handle distance filter selection
   const handleDistanceSelect = (dist) => {
     setActiveDistance(dist);
     if (onDistanceChange) {
@@ -37,9 +52,9 @@ export default function MarketplaceScreen({
     }
   };
 
-  // Filtered products list
+  // Filtered product pipeline
   const filteredProducts = useMemo(() => {
-    return rawProductsList.filter((item) => {
+    return rawProducts.filter((item) => {
       // 1. Search Query Filter
       const title = (item.title || item.name || item.productName || '').toLowerCase();
       const description = (item.description || '').toLowerCase();
@@ -52,18 +67,18 @@ export default function MarketplaceScreen({
         selectedCategory === 'All' ||
         itemCategory.toLowerCase() === selectedCategory.toLowerCase();
 
-      // 3. Distance Filter (If distance value is numeric on item)
+      // 3. Distance Filter
       let matchesDistance = true;
       if (activeDistance !== 'all' && typeof item.distance === 'number') {
-        const maxDistMeters = parseInt(activeDistance, 10) * 1000;
-        matchesDistance = item.distance <= maxDistMeters;
+        const maxMeters = parseInt(activeDistance, 10) * 1000;
+        matchesDistance = item.distance <= maxMeters;
       }
 
       return matchesSearch && matchesCategory && matchesDistance;
     });
-  }, [rawProductsList, searchQuery, selectedCategory, activeDistance]);
+  }, [rawProducts, searchQuery, selectedCategory, activeDistance]);
 
-  // Handle click on product card -> routes to DetailScreen
+  // Pass complete product object to DetailScreen handler
   const handleCardClick = (product) => {
     if (onSelectProduct) {
       onSelectProduct(product);
@@ -74,7 +89,7 @@ export default function MarketplaceScreen({
 
   return (
     <div className="pm-screen-container">
-      {/* Top Sticky Header */}
+      {/* Header & Controls Sticky Top Bar */}
       <header className="pm-header">
         <div className="pm-header-top">
           {onBack && (
@@ -82,7 +97,7 @@ export default function MarketplaceScreen({
               type="button"
               className="pm-back-btn"
               onClick={onBack}
-              aria-label="Go back"
+              aria-label="Go Back"
             >
               â€¹
             </button>
@@ -90,7 +105,7 @@ export default function MarketplaceScreen({
           <h1 className="pm-title">Products Marketplace</h1>
         </div>
 
-        {/* Professional Search Bar */}
+        {/* Modern Search Input */}
         <div className="pm-search-box">
           <svg
             className="pm-search-icon"
@@ -116,25 +131,26 @@ export default function MarketplaceScreen({
               type="button"
               className="pm-search-clear"
               onClick={() => setSearchQuery('')}
+              aria-label="Clear Search"
             >
               âœ•
             </button>
           )}
         </div>
 
-        {/* Horizontal Category Filter Pills */}
+        {/* Horizontal Category Scroll */}
         <div className="pm-categories-scroll">
           {categories.map((cat) => {
-            const catLabel = typeof cat === 'string' ? cat : cat.name || cat.label;
-            const displayName = getCategoryDisplayName ? getCategoryDisplayName(catLabel) : catLabel;
-            const isActive = selectedCategory.toLowerCase() === catLabel.toLowerCase();
+            const rawLabel = typeof cat === 'string' ? cat : cat.name || cat.label;
+            const displayName = getCategoryDisplayName ? getCategoryDisplayName(rawLabel) : rawLabel;
+            const isActive = selectedCategory.toLowerCase() === rawLabel.toLowerCase();
 
             return (
               <button
-                key={catLabel}
+                key={rawLabel}
                 type="button"
                 className={`pm-category-pill ${isActive ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(catLabel)}
+                onClick={() => setSelectedCategory(rawLabel)}
               >
                 {displayName}
               </button>
@@ -142,7 +158,7 @@ export default function MarketplaceScreen({
           })}
         </div>
 
-        {/* Distance / Location Filter Chips */}
+        {/* Compact Distance Chips */}
         <div className="pm-distance-bar">
           {[
             { label: 'All Distance', val: 'all' },
@@ -162,18 +178,18 @@ export default function MarketplaceScreen({
         </div>
       </header>
 
-      {/* Product Content / Grid */}
+      {/* Main Responsive Grid Section */}
       <main className="pm-content">
         {filteredProducts.length === 0 ? (
           <div className="pm-empty-state">
             <div className="pm-empty-icon">ðŸ“¦</div>
             <h3>No products found</h3>
-            <p>Try tweaking your search term, category, or distance filter.</p>
+            <p>Try adjusting your search query, category, or distance filter.</p>
           </div>
         ) : (
           <div className="pm-grid">
             {filteredProducts.map((item) => {
-              // Safe field resolutions adhering to existing Firestore schema
+              // Existing field mappings from Firestore
               const title = item.title || item.name || item.productName || 'Untitled Item';
               const points = item.points ?? item.karmaPoints ?? item.price ?? 0;
               const imageUrl =
