@@ -18,7 +18,7 @@ import {
   ShieldCheck,
   BadgeCheck,
   Video,
-  Film8
+  Film,
 } from "lucide-react";
 import {
   doc,
