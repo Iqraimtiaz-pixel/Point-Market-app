@@ -13,7 +13,7 @@
 //    users                pmPoints balance field
 // =============================================================================
 
-import { db } from "../firebase";
+import { db } from "./firebase";
 import {
   doc,
   getDoc,
