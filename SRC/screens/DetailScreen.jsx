@@ -26,7 +26,7 @@ import {
 import { db } from "../firebase";
 import { haversineDistanceKm, formatDistance } from "../utils/distance";
 import { submitReview } from "../utils/platformStore";
-import { verifyProductListing } from "../utils/pointsEngine";
+import { verifyProductListing } from "../PointsEngine";
 
 export function DetailScreen({ item, userLocation, onBack, onTrade, onAiHub, onBattle, onOpenPmSpace, currentUser }) {
   const [saved,           setSaved]           = useState(false);
